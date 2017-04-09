@@ -6,17 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2017/4 | yanhao的博客</title>
+  <title>LruCache 源码解析 | yanhao的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="关山口森林里的一只码猿">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yanhao的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2017/04/index.html">
+  <meta name="description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
+LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LruCache 源码解析">
+<meta property="og:url" content="http://yoursite.com/2017/04/09/LruCache-源码解析/index.html">
 <meta property="og:site_name" content="yanhao的博客">
-<meta property="og:description" content="关山口森林里的一只码猿">
+<meta property="og:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
+LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+<meta property="og:image" content="http://yoursite.com/./picture/1.png">
+<meta property="og:updated_time" content="2017-04-09T04:07:48.708Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="yanhao的博客">
-<meta name="twitter:description" content="关山口森林里的一只码猿">
+<meta name="twitter:title" content="LruCache 源码解析">
+<meta name="twitter:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
+LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+<meta name="twitter:image" content="http://yoursite.com/./picture/1.png">
   
     <link rel="alternative" href="/atom.xml" title="yanhao的博客" type="application/atom+xml">
   
@@ -160,76 +166,356 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-LruCache-源码解析" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      LruCache 源码解析
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/09/LruCache-源码解析/" class="archive-article-date">
+
+        
+        <a href="/2017/04/09/LruCache-源码解析/" class="archive-article-date">
   	<time datetime="2017-04-09T01:36:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-09</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/09/LruCache-源码解析/">LruCache 源码解析</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="LruCache介绍"><a href="#LruCache介绍" class="headerlink" title="LruCache介绍"></a>LruCache介绍</h3><p>LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。<br><a href="http://www.grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/support/v4/util/LruCache.java#LruCache.%3Cinit%3E%28int%29" target="_blank" rel="external">LruCache 源码</a></p>
+<h3 id="LruCache使用"><a href="#LruCache使用" class="headerlink" title="LruCache使用"></a>LruCache使用</h3><p>LruCache的使用十分简单，先创建一个对象，然后使用put()和get()方法就能实现内容的存放和读取。创建LruCache对象时只需要传一个int类型的参数，用于指定缓存的最大容量。</p>
+<pre><code>//指定缓存最大容量为当前应用可用容量的八分之一
+LruCache&lt;String,Bitmap&gt; mLruCache=new LruCache(Runtime.getRuntime().maxMemory()/1024/8);
+</code></pre><h3 id="LruCache源码分析"><a href="#LruCache源码分析" class="headerlink" title="LruCache源码分析"></a>LruCache源码分析</h3><p>首先从LruCache类的属性入手 </p>
+<pre><code>public class LruCache&lt;K,V&gt;{
+    private final LinkedHashMap&lt;K,V&gt; map; //使用LinkedHashMap用于数据的存储
+    private int size;    //保存当前缓存已经使用的空间大小
+    private int maxSize;//创建LruCache对象时初始化，缓存区的最大控件    
+    private int putCount;
+    private int createCount;
+    private int hitCount;
+    private int missCount;
+}
+</code></pre><p>在创建LruCache对象时完成了指定最大的缓存大小和创建LinkedHashMap对象的工作。 </p>
+<pre><code>public LruCache(int maxSize){
+    if(maxSize&lt;=0){
+        throw new ILLegalArgumentException(&quot;maxSize&lt;=0&quot;);
+    }
+    this.maxSize=maxSize;
+    this.map=new LinkedHashMap&lt;K,V&gt;(0,0.75f,true);
+} 
+</code></pre><p>put()方法的实现，在判断输入不为空后将数据存放在LinkedHashMap中，previous保存的是在LinkedHashMap中存在相同键值的数据，如果之前存在相同键值的数据，调用entryRemoved函数，（entryRemoved函数是在一个值需要明确释放时remove调用，或者value被替换时put调用，在源码中这个函数为空，用户可以根据自己需要重写这个函数），最后调用trimToSize（）函数在进行缓存空间计算和相应的处理。</p>
+<pre><code>public final V put(K key,V value){
+    if (key == null || value == null) {
+        throw new NullPointerException(&quot;key == null value == null&quot;);
+    }
+    V previous;
+    synchronized (this) {
+        putCount++;
+        size += safeSizeOf(key, value);
+        previous = map.put(key, value);
+        if (previous != null) {
+            size -= safeSizeOf(key, previous);
+        }
+    }
 
-        <div class="article-info info-on-right">
-          
-          
+    if (previous != null) {
+       entryRemoved(false, key, previous, value);
+    }
 
+    trimToSize(maxSize);
+    return previous;
+}    
+</code></pre><p>在调用map.put(key,value)前进行了value大小的计算: </p>
+<pre><code>private int safeSizeOf(K key,V value){
+    int result=sizeOf(key,value);
+    if(result&lt;0){
+        throw new IllegalStateExcption(+key++value);
+    }
+    return result;
+}
+</code></pre><p>再来看看LruCache类中的get()方法，在map中根据Key寻找Value，找到则返回该value</p>
+<pre><code>public final V get(K key) {
+     if (key == null) {
+         throw new NullPointerException();
+     }
+
+    V mapValue;
+    synchronized (this) {
+         mapValue = map.get(key);
+         if (mapValue != null) {
+         hitCount++;
+         return mapValue;
+         }
+     missCount++;
+     }
+
+ /*
+ * Attempt to create a value. This may take a long time, and the map
+ * may be different when create() returns. If a conflicting value was
+ * added to the map while create() was working, we leave that value in
+ * the map and release the created value.
+ */
+
+     V createdValue = create(key);
+         if (createdValue == null) {
+         return null;
+     }
+
+     synchronized (this) {
+     createCount++;
+     mapValue = map.put(key, createdValue);
+
+     if (mapValue != null) {
+     // There was a conflict so undo that last put
+         map.put(key, mapValue);
+     } else {
+         size += safeSizeOf(key, createdValue);
+         }
+     }
+
+     if (mapValue != null) {
+         entryRemoved(false, key, createdValue, mapValue);
+         return mapValue;
+     } else {
+         trimToSize(maxSize);
+         return createdValue;
+     }
+ }
+</code></pre><p>最后来看LruCache容器达到max时是如何清理最少使用的数据</p>
+<pre><code>public void trimToSize(int maxSize) {
+     while (true) {
+         K key;
+         V value;
+         synchronized (this) {
+             if (size &lt; 0 || (map.isEmpty() &amp;&amp; size != 0)) {
+                 throw new IllegalStateException(getClass().getName()+ );
+             }
+
+             if (size &lt;= maxSize) {
+             break;
+             }
+
+             Map.Entry&lt;K, V&gt; toEvict = map.eldest();
+             if (toEvict == null) {
+             break;
+         }
+
+         key = toEvict.getKey();
+         value = toEvict.getValue();
+         map.remove(key);
+         size -= safeSizeOf(key, value);
+         evictionCount++;
+         }
+         entryRemoved(true, key, value, null);
+ }
+</code></pre><p>以上是LruCache类中关键的函数代码，但是并没有体现LeastRecentlyUsed算法，其实算法的实现是利用LinkHashMap完成 </p>
+<p>查看HashMap中put()函数的源码如下: </p>
+<pre><code>@Override public V put(K key, V value) {
+     if (key == null) {
+         return putValueForNullKey(value);
+     }
+
+     int hash = Collections.secondaryHash(key);
+     HashMapEntry&lt;K, V&gt;[] tab = table;
+     int index = hash &amp; (tab.length - 1);
+     for (HashMapEntry&lt;K, V&gt; e = tab[index]; e != null; e = e.next) {
+         if (e.hash == hash &amp;&amp; key.equals(e.key)) {
+             preModify(e);
+             V oldValue = e.value;
+             e.value = value;
+             return oldValue;
+         }
+    }
+
+ // No entry for (non-null) key is present; create one modCount++;
+ if (size++ &gt; threshold) {
+     tab = doubleCapacity();
+     index = hash &amp; (tab.length - 1);
+ }
+ addNewEntry(key, value, hash, index);
+ return null;
+} 
+</code></pre><p>put方法会做一个判断，如果table中存在key对应的值就会替换掉value，如果不存在就会加入到table中，LinkedHashMap重写了preModify函数和addNewEntry函数。首先看addNewEntry函数 </p>
+<pre><code>@Override void addNewEntry(K key, V value, int hash, int index) {
+     LinkedEntry&lt;K, V&gt; header = this.header;
+
+     // Remove eldest entry if instructed to do so.
+     LinkedEntry&lt;K, V&gt; eldest = header.nxt;
+     if (eldest != header &amp;&amp; removeEldestEntry(eldest)) {
+         remove(eldest.key);
+     }
+
+    // Create new entry, link it on to list, and put it into table
+     LinkedEntry&lt;K, V&gt; oldTail = header.prv;
+     LinkedEntry&lt;K, V&gt; newTail = new LinkedEntry&lt;K,V&gt;(
+         key, value, hash, table[index], header, oldTail);
+     table[index] = oldTail.nxt = header.prv = newTail;
+ }
+</code></pre><p>preModify函数: </p>
+<pre><code>@Override void preModify(HashMapEntry&lt;K, V&gt; e) {
+     if (accessOrder) {
+         makeTail((LinkedEntry&lt;K, V&gt;) e);
+ }
+private void makeTail(LinkedEntry&lt;K, V&gt; e) {
+     // Unlink e
+     e.prv.nxt = e.nxt;
+     e.nxt.prv = e.prv;
+
+     // Relink e as tail
+     LinkedEntry&lt;K, V&gt; header = this.header;
+     LinkedEntry&lt;K, V&gt; oldTail = header.prv;
+     e.nxt = header;
+     e.prv = oldTail;
+     oldTail.nxt = header.prv = e;
+     modCount++;
+ }
+</code></pre><p>上面的代码实现了一个双向链表： </p>
+<p><img src="./picture/1.png" alt=" "></p>
+<p>当每加入一个新的item时，这个item会被加在最右端（远离HEAD端），当加入的item已经存在时，这个item会被移动到最右端，这样离HEAD最近的就是最近最少使用的。</p>
+<p>查看LinkedHashMap中get（）函数源码如下:</p>
+<pre><code>@Override public V get(Object key) {
+ /*
+ * This method is overridden to eliminate the need for a polymorphic
+ * invocation in superclass at the expense of code duplication.
+ */
+     if (key == null) {
+         HashMapEntry&lt;K, V&gt; e = entryForNullKey;
+         if (e == null)
+             return null;
+         if (accessOrder)
+             makeTail((LinkedEntry&lt;K, V&gt;) e);
+         return e.value;
+     }
+
+     int hash = Collections.secondaryHash(key);
+     HashMapEntry&lt;K, V&gt;[] tab = table;
+     for (HashMapEntry&lt;K, V&gt; e = tab[hash &amp; (tab.length - 1)];
+         e != null; e = e.next) {
+         K eKey = e.key;
+         if (eKey == key || (e.hash == hash &amp;&amp; key.equals(eKey))) {
+             if (accessOrder)
+                 makeTail((LinkedEntry&lt;K, V&gt;) e);
+             return e.value;
+         }
+     }
+     return null;
+}
+</code></pre><p>可以看到在LinkedHashMap的get（）函数中，每获取到一个元素就会调用makeTail函数，将该元素移动到远离header的最右端，表示该元素最近被使用过。</p>
+<p>最后是trimToSize函数，这个函数在get（），put（），reSize（）中都会调用，它会根据size和maxSize的比较当前存储是否超值，如果超过，它会逐个删除靠近head的结点，直到小于就退出while循环，通过这些函数就实现了Lru算法。</p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>在创建LruCache对象时可以重写根据需要重写sizeof(String key,Bitmap value)、entryRemove(boolean evicted,String key,Value oldValue,Value newValue)、Value create(String key)这三个函数</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/04/09/LruCache-源码解析/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/09/Builder-设计模式/" class="archive-article-date">
-  	<time datetime="2017-04-09T01:22:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-09</time>
-</a>
-        </div>
-    	 
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/09/Builder-设计模式/">Builder 设计模式</a>
-    </h1>
+  
+    <a href="/2017/04/09/Builder-设计模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Builder 设计模式</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+  <div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="LruCache-源码解析" data-title="LruCache 源码解析" data-url="http://yoursite.com/2017/04/09/LruCache-源码解析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"litten-hexo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
   
 
-        <div class="article-info info-on-right">
-          
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -252,8 +538,8 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
