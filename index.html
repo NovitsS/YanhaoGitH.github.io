@@ -371,7 +371,7 @@ private void makeTail(LinkedEntry&lt;K, V&gt; e) {
      modCount++;
  }
 </code></pre><p>上面的代码实现了一个双向链表： </p>
-<p><img src="./picture/1.png" alt=" "></p>
+<p><img src="/img/1.png" alt=" "></p>
 <p>当每加入一个新的item时，这个item会被加在最右端（远离HEAD端），当加入的item已经存在时，这个item会被移动到最右端，这样离HEAD最近的就是最近最少使用的。</p>
 <p>查看LinkedHashMap中get（）函数源码如下:</p>
 <pre><code>@Override public V get(Object key) {

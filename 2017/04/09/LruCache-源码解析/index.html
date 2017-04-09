@@ -16,13 +16,13 @@ LruCache使用LruCache的使用十分简单，先创建一个对象，然后使�
 <meta property="og:site_name" content="yanhao的博客">
 <meta property="og:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
 LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
-<meta property="og:image" content="http://yoursite.com/./picture/1.png">
-<meta property="og:updated_time" content="2017-04-09T04:07:48.708Z">
+<meta property="og:image" content="http://yoursite.com/img/1.png">
+<meta property="og:updated_time" content="2017-04-09T04:16:56.877Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LruCache 源码解析">
 <meta name="twitter:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
 LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
-<meta name="twitter:image" content="http://yoursite.com/./picture/1.png">
+<meta name="twitter:image" content="http://yoursite.com/img/1.png">
   
     <link rel="alternative" href="/atom.xml" title="yanhao的博客" type="application/atom+xml">
   
@@ -375,7 +375,7 @@ private void makeTail(LinkedEntry&lt;K, V&gt; e) {
      modCount++;
  }
 </code></pre><p>上面的代码实现了一个双向链表： </p>
-<p><img src="./picture/1.png" alt=" "></p>
+<p><img src="/img/1.png" alt=" "></p>
 <p>当每加入一个新的item时，这个item会被加在最右端（远离HEAD端），当加入的item已经存在时，这个item会被移动到最右端，这样离HEAD最近的就是最近最少使用的。</p>
 <p>查看LinkedHashMap中get（）函数源码如下:</p>
 <pre><code>@Override public V get(Object key) {
