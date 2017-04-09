@@ -182,14 +182,13 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>###builder模式的介绍</p>
-<ul>
+        <h3 id="builder模式的介绍"><a href="#builder模式的介绍" class="headerlink" title="builder模式的介绍"></a>builder模式的介绍</h3><ul>
 <li><p>经典Builder模式的重点：将一个复杂对象的构建与它的表示分离，使得相同的构建过程可以构建不同的表示</p>
 </li>
 <li><p>变种builder模式的重点：目的在于减少对象创建过程中引入的多个重载构造函数，可选参数以及setters过度使用导致不必要的复杂性</p>
 </li>
 </ul>
-<p>###builder模式的使用<br>角色介绍：</p>
+<h3 id="builder模式的使用"><a href="#builder模式的使用" class="headerlink" title="builder模式的使用"></a>builder模式的使用</h3><p>角色介绍：</p>
 <ul>
 <li>Product产品类-产品的抽象类 </li>
 <li>Builder-抽象Builder类，用于规范产品的组件 </li>
@@ -256,7 +255,7 @@ class Director{
     }
 } 
 </code></pre><p><a href="http://www.grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/app/AlertDialog.java#AlertDialog" target="_blank" rel="external">android源码中的Builder的Builder模式实现实例</a> </p>
-<p>###变种的Builder模式<br>经典的Builder模式的侧重点在于抽象出对象的创建过程，通过不同的具体实现得到不同的结果隐藏构建的细节。变种的Builder模式的母体在于减少对象创建过程中引入过多的重载构造函数，以及setters过度使用导致的不必要的复杂性。</p>
+<h3 id="变种的Builder模式"><a href="#变种的Builder模式" class="headerlink" title="变种的Builder模式"></a>变种的Builder模式</h3><p>经典的Builder模式的侧重点在于抽象出对象的创建过程，通过不同的具体实现得到不同的结果隐藏构建的细节。变种的Builder模式的母体在于减少对象创建过程中引入过多的重载构造函数，以及setters过度使用导致的不必要的复杂性。</p>
 <p>场景分析：一个Product里面有许多组件，有些组件是必须存在的，有些组件可选。</p>
 <pre><code>class Computer{
     private final display;
