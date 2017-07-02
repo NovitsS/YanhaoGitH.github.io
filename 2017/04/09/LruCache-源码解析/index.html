@@ -8,20 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>LruCache 源码解析 | yanhao的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
-LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+  <meta name="description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LruCache 源码解析">
 <meta property="og:url" content="http://yoursite.com/2017/04/09/LruCache-源码解析/index.html">
 <meta property="og:site_name" content="yanhao的博客">
-<meta property="og:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
-LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+<meta property="og:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码">
 <meta property="og:image" content="http://yoursite.com/img/1.png">
-<meta property="og:updated_time" content="2017-04-09T04:16:56.877Z">
+<meta property="og:updated_time" content="2017-07-02T06:59:04.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LruCache 源码解析">
-<meta name="twitter:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码
-LruCache使用LruCache的使用十分简单，先创建一个对象，然后使用put(">
+<meta name="twitter:description" content="LruCache介绍LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。LruCache 源码">
 <meta name="twitter:image" content="http://yoursite.com/img/1.png">
   
     <link rel="alternative" href="/atom.xml" title="yanhao的博客" type="application/atom+xml">
@@ -187,6 +184,7 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="LruCache介绍"><a href="#LruCache介绍" class="headerlink" title="LruCache介绍"></a>LruCache介绍</h3><p>LruCache用作内存缓存，Lru是LeastRecentlyUsed的简称，在LruCache的实现过程中使用到近期最少使用算法。当缓存容器中的数据大小达到指定的最大容量时，Lru会清除最近最少使用的数据，LruCache已经存在于android3.1之后的api中。<br><a href="http://www.grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/support/v4/util/LruCache.java#LruCache.%3Cinit%3E%28int%29" target="_blank" rel="external">LruCache 源码</a></p>
+<a id="more"></a>
 <h3 id="LruCache使用"><a href="#LruCache使用" class="headerlink" title="LruCache使用"></a>LruCache使用</h3><p>LruCache的使用十分简单，先创建一个对象，然后使用put()和get()方法就能实现内容的存放和读取。创建LruCache对象时只需要传一个int类型的参数，用于指定缓存的最大容量。</p>
 <pre><code>//指定缓存最大容量为当前应用可用容量的八分之一
 LruCache&lt;String,Bitmap&gt; mLruCache=new LruCache(Runtime.getRuntime().maxMemory()/1024/8);
